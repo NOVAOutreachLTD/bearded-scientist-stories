@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Bearded Scientist — Story Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════════════
+       DESIGN TOKENS — Bearded Scientist Brand Palette
+       ═══════════════════════════════════════════════════ */
+    :root {
+      --pink:        #E91E8C;
+      --pink-light:  #FF6BB5;
+      --pink-pale:   #FFF0F8;
+      --orange:      #FF7A35;
+      --orange-light:#FFB347;
+      --purple:      #7C3AED;
+      --purple-dark: #5B21B6;
+      --purple-pale: #F5F0FF;
+      --yellow:      #FFD700;
+      --green:       #22C55E;
+      --dark:        #1E1040;
+      --mid:         #4B3B7C;
+      --grey:        #6B7280;
+      --grey-light:  #F3F4F6;
+      --white:       #FFFFFF;
+      --shadow-sm:   0 2px 8px rgba(124,58,237,.12);
+      --shadow-md:   0 8px 24px rgba(124,58,237,.18);
+      --shadow-lg:   0 16px 48px rgba(124,58,237,.22);
+      --radius:      16px;
+      --radius-sm:   10px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       RESET & BASE
+       ═══════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--pink-pale);
+      color: var(--dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════ */
+    .site-header {
+      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
+      padding: 24px 20px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .site-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .header-logo {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ── Replace the src below with your actual character illustration ── */
+    .character-badge {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: 4px solid var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+      overflow: hidden;
+    }
+    .character-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .header-titles { text-align: left; }
+    @media (max-width: 480px) { .header-titles { text-align: center; } }
+
+    .header-eyebrow {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.75);
+      margin-bottom: 2px;
+    }
+
+    .header-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(28px, 5vw, 44px);
+      color: var(--white);
+      line-height: 1.1;
+      text-shadow: 2px 3px 0 rgba(0,0,0,.2);
+    }
+
+    .header-subtitle {
+      font-size: 15px;
+      color: rgba(255,255,255,.85);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    /* Floating star decorations */
+    .header-stars { position: absolute; inset: 0; pointer-events: none; }
+    .star {
+      position: absolute;
+      color: var(--yellow);
+      opacity: .6;
+      animation: twinkle 3s ease-in-out infinite;
+      font-size: 18px;
+    }
+    .star:nth-child(1) { top: 12%; left: 8%;  animation-delay: 0s;   }
+    .star:nth-child(2) { top: 60%; left: 4%;  animation-delay: .6s;  font-size: 12px; }
+    .star:nth-child(3) { top: 20%; right: 7%; animation-delay: 1.2s; }
+    .star:nth-child(4) { top: 70%; right: 5%; animation-delay: .3s;  font-size: 12px; }
+    .star:nth-child(5) { top: 40%; right: 2%; animation-delay: 1.8s; font-size: 14px; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: .6; transform: scale(1);    }
+      50%       { opacity: 1;  transform: scale(1.3); }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       MAIN LAYOUT
+       ═══════════════════════════════════════════════════ */
+    .main-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CARD
+       ═══════════════════════════════════════════════════ */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 540px) { .card { padding: 20px 16px; } }
+
+    .card-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 22px;
+      color: var(--purple);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       FORM ELEMENTS
+       ═══════════════════════════════════════════════════ */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 480px) { .form-grid-2 { grid-template-columns: 1fr; } }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    label {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--mid);
+    }
+    .label-optional {
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--grey);
+      margin-left: 4px;
+    }
+
+    input[type="text"],
+    textarea {
+      padding: 12px 16px;
+      border: 2px solid #E5E7EB;
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      color: var(--dark);
+      transition: border-color .2s, box-shadow .2s;
+      width: 100%;
+      background: var(--white);
+    }
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(233,30,140,.12);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── Pill selectors (age, pronouns) ── */
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-input { display: none; }
+    .pill-label {
+      padding: 8px 16px;
+      border: 2px solid #E5E7EB;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--grey);
+      cursor: pointer;
+      transition: all .2s;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .pill-input:checked + .pill-label {
+      background: var(--pink);
+      border-color: var(--pink);
+      color: var(--white);
+      box-shadow: 0 2px 8px rgba(233,30,140,.3);
+    }
+    .pill-label:hover { border-color: var(--pink-light); color: var(--pink); }
+    .pill-input:checked + .pill-label:hover { color: var(--white); }
+
+    /* ── Card option grids (hobby, lesson) ── */
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 400px) { .option-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .option-input { display: none; }
+    .option-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 10px;
+      border: 2px solid #E5E7EB;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all .2s;
+      text-align: center;
+      user-select: none;
+      background: var(--white);
+    }
+    .option-card:hover { border-color: var(--pink-light); background: var(--pink-pale); transform: translateY(-1px); }
+    .option-input:checked + .option-card {
+      border-color: var(--purple);
+      background: var(--purple-pale);
+      box-shadow: 0 2px 12px rgba(124,58,237,.2);
+      transform: translateY(-2px);
+    }
+    .option-emoji { font-size: 28px; line-height: 1; }
+    .option-text  { font-size: 12px; font-weight: 700; color: var(--mid); line-height: 1.3; }
+    .option-input:checked + .option-card .option-text { color: var(--purple-dark); }
+
+    /* ── Collapsible extra info ── */
+    .extras-toggle {
+      background: none;
+      border: none;
+      color: var(--purple);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .2s;
+    }
+    .extras-toggle:hover { color: var(--pink); }
+    .extras-toggle .chevron { transition: transform .3s; font-size: 12px; }
+    .extras-toggle.open .chevron { transform: rotate(180deg); }
+    .extras-panel { display: none; margin-top: 12px; }
+    .extras-panel.open { display: block; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: #F3F4F6; margin: 24px 0; }
+
+    /* ─── Generate button ──────────────────────────────── */
+    .btn-generate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, var(--pink), var(--orange));
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--white);
+      font-family: 'Fredoka One', cursive;
+      font-size: 20px;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+      box-shadow: 0 4px 16px rgba(233,30,140,.35);
+      letter-spacing: .5px;
+    }
+    .btn-generate:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(233,30,140,.45);
+    }
+    .btn-generate:active:not(:disabled) { transform: translateY(0); }
+    .btn-generate:disabled { opacity: .7; cursor: not-allowed; }
+
+    /* loading spinner */
+    .spinner {
+      width: 22px; height: 22px;
+      border: 3px solid rgba(255,255,255,.4);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      display: none;
+    }
+    .btn-generate.loading .spinner      { display: block; }
+    .btn-generate.loading .btn-icon     { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ═══════════════════════════════════════════════════
+       STORY OUTPUT SECTION
+       ═══════════════════════════════════════════════════ */
+    #story-section { display: none; }
+
+    .story-card {
+      background: linear-gradient(180deg, #FFFDF0 0%, var(--white) 100%);
+      border: 2px solid rgba(233,30,140,.12);
+    }
+
+    /* Story illustration strip */
+    .story-illustration {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
+      border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .story-illustration img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Placeholder when no image provided */
+    .story-illustration-placeholder {
+      text-align: center;
+      color: rgba(255,255,255,.85);
+    }
+    .story-illustration-placeholder .char-emoji { font-size: 72px; line-height: 1; }
+    .story-illustration-placeholder p {
+      font-family: 'Fredoka One', cursive;
+      font-size: 18px;
+      margin-top: 8px;
+    }
+
+    /* Story title */
+    #story-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(24px, 4vw, 36px);
+      color: var(--purple);
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    /* Story body */
+    #story-body {
+      font-size: 17px;
+      line-height: 1.85;
+      color: var(--dark);
+      white-space: pre-wrap;
+    }
+    #story-body p { margin-bottom: 14px; }
+
+    /* Science Spark block */
+    .science-spark {
+      margin-top: 28px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, var(--purple-pale), var(--pink-pale));
+      border-left: 5px solid var(--orange);
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+    .science-spark.visible { display: block; }
+    .science-spark-heading {
+      font-family: 'Fredoka One', cursive;
+      font-size: 16px;
+      color: var(--orange);
+      margin-bottom: 8px;
+      letter-spacing: .5px;
+    }
+    .science-spark-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--mid);
+    }
+
+    /* Cursor blink while streaming */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--pink);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ─── Story action buttons ─────────────────────────── */
+    .story-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all .2s;
+      border: 2px solid transparent;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--purple);
+      color: var(--white);
+      box-shadow: 0 4px 14px rgba(124,58,237,.3);
+    }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--pink);
+      color: var(--pink);
+    }
+    .btn-outline:hover { background: var(--pink-pale); transform: translateY(-1px); }
+
+    /* ═══════════════════════════════════════════════════
+       MONETISATION BANNER
+       ═══════════════════════════════════════════════════ */
+    .free-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+
+    .upgrade-banner {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 24px;
+      display: none;
+    }
+    .upgrade-banner.visible { display: block; }
+    .upgrade-banner h3 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    .upgrade-banner p { font-size: 14px; opacity: .9; margin-bottom: 14px; }
+    .btn-upgrade {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 22px;
+      background: var(--yellow);
+      color: var(--dark);
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: transform .2s;
+      text-decoration: none;
+    }
+    .btn-upgrade:hover { transform: scale(1.04); }
+
+    /* ═══════════════════════════════════════════════════
+       ERROR MESSAGE
+       ═══════════════════════════════════════════════════ */
+    .error-msg {
+      display: none;
+      background: #FEF2F2;
+      border: 2px solid #FECACA;
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      color: #DC2626;
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+    .error-msg.visible { display: block; }
+
+    /* ═══════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════ */
+    .site-footer {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--grey);
+      font-size: 13px;
+    }
+    .site-footer a { color: var(--purple); font-weight: 700; text-decoration: none; }
+    .site-footer a:hover { color: var(--pink); }
+
+    /* ═══════════════════════════════════════════════════
+       PRINT STYLES — clean PDF output
+       ═══════════════════════════════════════════════════ */
+    @media print {
+      body            { background: white; }
+      .site-header,
+      .form-card,
+      .story-actions,
+      .upgrade-banner,
+      .site-footer    { display: none !important; }
+      #story-section  { display: block !important; }
+      .story-card     { box-shadow: none; border: none; }
+      .story-illustration { height: 120px; }
+      #story-title    { color: #5B21B6; }
+      .science-spark  { border-color: #FF7A35; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-stars" aria-hidden="true">
+      <span class="star">★</span><span class="star">✦</span>
+      <span class="star">★</span><span class="star">✦</span><span class="star">★</span>
+    </div>
+    <div class="header-logo">
+      <!--
+        TO ADD YOUR CHARACTER ILLUSTRATION:
+        Replace the emoji inside .character-badge with:
+        <img src="images/bearded-scientist.png" alt="The Bearded Scientist" />
+        and place your image in public/images/
+      -->
+      <div class="character-badge" aria-hidden="true">🧪</div>
+      <div class="header-titles">
+        <p class="header-eyebrow">Nova Outreach presents</p>
+        <h1 class="header-title">The Bearded Scientist</h1>
+        <p class="header-subtitle">✨ Personalised Story Generator ✨</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       MAIN
+       ═══════════════════════════════════════════════════ -->
+  <main class="main-wrap">
+
+    <!-- Free stories badge -->
+    <div style="text-align:center; margin-bottom:12px;">
+      <span class="free-badge" id="free-badge">✨ <span id="free-count">3</span> free stories remaining</span>
+    </div>
+
+    <!-- Upgrade banner (shown when free limit hit) -->
+    <div class="upgrade-banner" id="upgrade-banner">
+      <h3>🚀 You've used your free stories!</h3>
+      <p>Unlock unlimited personalised adventures for just £3.99/month — or grab individual stories for £0.99 each.</p>
+      <!-- 🔧 Replace href with your Stripe payment link -->
+      <a href="#" class="btn-upgrade">⚡ Unlock Unlimited Stories</a>
+    </div>
+
+    <!-- ─── STORY FORM CARD ──────────────────────────────── -->
+    <div class="card form-card">
+      <h2 class="card-title">🔬 About the Young Explorer</h2>
+
+      <form id="story-form" novalidate>
+
+        <!-- Name -->
+        <div class="form-group" style="margin-bottom:20px;">
+          <label for="childName">Child's first name <span style="color:var(--pink)">*</span></label>
+          <input type="text" id="childName" name="childName" placeholder="e.g. Arlo, Priya, Sam…" maxlength="30" autocomplete="off" required />
+        </div>
+
+        <div class="form-grid-2" style="margin-bottom:20px;">
+          <!-- Age -->
+          <div class="form-group">
+            <label>Age <span style="color:var(--pink)">*</span></label>
+            <div class="pill-group" role="radiogroup" aria-label="Child's age">
+              <input class="pill-input" type="radio" name="age" id="age3" value="3" /><label class="pill-label" for="age3">3–4</label>
+              <input class="pill-input" type="radio" name="age" id="age5" value="5" /><label class="pill-label" for="age5">5–6</label>
+              <input class="pill-input" type="radio" name="age" id="age7" value="7" /><label class="pill-label" for="age7">7–8</label>
+              <input class="pill-input" type="radio" name="age" id="age9" value="9" /><label class="pill-label" for="age9">9–10</label>
+              <input class="pill-input" type="radio" name="age" id="age11" value="11" /><label class="pill-label" for="age11">11–12</label>
+            </div>
+          </div>
+
+          <!-- Pronouns -->
+          <div class="form-group">
+            <label>Pronouns <span style="color:var(--grey); font-weight:400; font-size:12px">(optional)</span></label>
+            <div class="pill-group" role="radiogroup" aria-label="Child's pronouns">
+              <input class="pill-input" type="radio" name="pronoun" id="pronHe"   value="he"   /><label class="pill-label" for="pronHe">He / Him</label>
+              <input class="pill-input" type="radio" name="pronoun" id="pronShe"  value="she"  /><label class="pill-label" for="pronShe">She / Her</label>
+              <input class="pill-input" type="radio" name="pronoun" id="pronThey" value="they" checked /><label class="pill-label" for="pronThey">They / Them</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Hobby / Setting -->
+        <div class="form-group" style="margin-bottom:20px;">
+          <label>Story setting / hobby <span style="color:var(--pink)">*</span></label>
+          <div class="option-grid" role="radiogroup" aria-label="Story setting">
+            <input class="option-input" type="radio" name="hobby" id="h-stem"    value="Science, Technology & Invention" /><label class="option-card" for="h-stem"><span class="option-emoji">🔬</span><span class="option-text">Science &amp; STEM</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-sport"   value="Football and sport" /><label class="option-card" for="h-sport"><span class="option-emoji">⚽</span><span class="option-text">Sport &amp; Football</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-art"     value="Art, drawing and creativity" /><label class="option-card" for="h-art"><span class="option-emoji">🎨</span><span class="option-text">Art &amp; Creativity</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-nature"  value="Nature, animals and the outdoors" /><label class="option-card" for="h-nature"><span class="option-emoji">🌿</span><span class="option-text">Nature &amp; Animals</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-space"   value="Space exploration and adventure" /><label class="option-card" for="h-space"><span class="option-emoji">🚀</span><span class="option-text">Space &amp; Adventure</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-music"   value="Music, singing and dance" /><label class="option-card" for="h-music"><span class="option-emoji">🎵</span><span class="option-text">Music &amp; Dance</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-cooking" value="Cooking, baking and food" /><label class="option-card" for="h-cooking"><span class="option-emoji">🍳</span><span class="option-text">Cooking &amp; Baking</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-reading" value="Books, reading and storytelling" /><label class="option-card" for="h-reading"><span class="option-emoji">📚</span><span class="option-text">Books &amp; Reading</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-games"   value="Games, coding and technology" /><label class="option-card" for="h-games"><span class="option-emoji">🎮</span><span class="option-text">Games &amp; Coding</span></label>
+            <input class="option-input" type="radio" name="hobby" id="h-ocean"   value="The ocean, swimming and sea life" /><label class="option-card" for="h-ocean"><span class="option-emoji">🌊</span><span class="option-text">Ocean &amp; Swimming</span></label>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Life Lesson -->
+        <div class="form-group" style="margin-bottom:20px;">
+          <label>What would you like the story to explore? <span style="color:var(--pink)">*</span></label>
+          <div class="option-grid" role="radiogroup" aria-label="Life lesson">
+            <input class="option-input" type="radio" name="lesson" id="l-brave"   value="Bravery and courage — trying new things even when you feel scared" /><label class="option-card" for="l-brave"><span class="option-emoji">💪</span><span class="option-text">Bravery &amp; Courage</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-kind"    value="Kindness and empathy — understanding how others feel" /><label class="option-card" for="l-kind"><span class="option-emoji">🤝</span><span class="option-text">Kindness &amp; Empathy</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-diff"    value="Celebrating our differences — everyone is unique and that is wonderful" /><label class="option-card" for="l-diff"><span class="option-emoji">🌈</span><span class="option-text">Celebrating Differences</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-eq"      value="Emotional intelligence — understanding and naming your feelings" /><label class="option-card" for="l-eq"><span class="option-emoji">💚</span><span class="option-text">Emotional Intelligence</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-planet"  value="Looking after our planet — environmental care and sustainability" /><label class="option-card" for="l-planet"><span class="option-emoji">🌍</span><span class="option-text">Caring for Our Planet</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-sharing" value="Sharing, generosity and thinking of others" /><label class="option-card" for="l-sharing"><span class="option-emoji">🤲</span><span class="option-text">Sharing &amp; Generosity</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-voice"   value="Finding your voice — speaking up for yourself and others" /><label class="option-card" for="l-voice"><span class="option-emoji">💬</span><span class="option-text">Finding Your Voice</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-self"    value="Self-confidence and self-love — being proud of who you are" /><label class="option-card" for="l-self"><span class="option-emoji">❤️</span><span class="option-text">Self-love &amp; Confidence</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-persist" value="Perseverance — never giving up when things get hard" /><label class="option-card" for="l-persist"><span class="option-emoji">🌟</span><span class="option-text">Never Giving Up</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-friend"  value="Friendship and community — building strong, caring connections" /><label class="option-card" for="l-friend"><span class="option-emoji">🫂</span><span class="option-text">Friendship &amp; Community</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-respect" value="Respect for everyone — treating all people with dignity no matter who they are" /><label class="option-card" for="l-respect"><span class="option-emoji">🏳️‍🌈</span><span class="option-text">Respecting Everyone</span></label>
+            <input class="option-input" type="radio" name="lesson" id="l-mind"    value="Mental health and wellbeing — it is okay to talk about how you feel" /><label class="option-card" for="l-mind"><span class="option-emoji">🧠</span><span class="option-text">Mental Wellbeing</span></label>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Optional extra info -->
+        <button type="button" class="extras-toggle" id="extras-toggle" aria-expanded="false">
+          <span>➕</span> Add something special about <span id="extras-name-hint">this child</span>
+          <span class="chevron">▾</span>
+        </button>
+        <div class="extras-panel" id="extras-panel">
+          <div class="form-group">
+            <label for="extraInfo">Tell us a little more <span class="label-optional">(optional)</span></label>
+            <textarea id="extraInfo" name="extraInfo" placeholder="e.g. loves dinosaurs, has a pet cat called Mango, recently started at a new school, learning to ride a bike…"></textarea>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Error message -->
+        <div class="error-msg" id="error-msg" role="alert"></div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-generate" id="generate-btn">
+          <span class="btn-icon">✨</span>
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="btn-text">Create Magical Story!</span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- ─── STORY OUTPUT ───────────────────────────────── -->
+    <div id="story-section">
+      <div class="card story-card">
+
+        <!-- Illustration area -->
+        <div class="story-illustration" id="story-illustration">
+          <!--
+            TO ADD YOUR CHARACTER ILLUSTRATION:
+            Swap the placeholder div below with:
+            <img src="images/story-scene.png" alt="The Bearded Scientist story illustration" />
+
+            Or for dynamic theming, you could swap images based on the selected hobby.
+          -->
+          <div class="story-illustration-placeholder">
+            <div class="char-emoji">🧪</div>
+            <p>The Bearded Scientist</p>
+          </div>
+        </div>
+
+        <!-- Story title -->
+        <h2 id="story-title"></h2>
+
+        <!-- Story body -->
+        <div id="story-body"></div>
+
+        <!-- Science Spark -->
+        <div class="science-spark" id="science-spark">
+          <div class="science-spark-heading">⚡ THE BEARDED SCIENTIST'S SCIENCE SPARK ⚡</div>
+          <div class="science-spark-text" id="science-spark-text"></div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="story-actions">
+          <button class="btn btn-primary" onclick="downloadStory()">
+            📄 Download Story
+          </button>
+          <button class="btn btn-outline" onclick="resetForm()">
+            🔄 Create Another Story
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <p>Made with 💜 by <a href="#" target="_blank">Nova Outreach</a> · The Bearded Scientist</p>
+    <p style="margin-top:6px; font-size:12px;">Every child deserves to be the hero of their own story ✨</p>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════
+       JAVASCRIPT
+       ═══════════════════════════════════════════════════ -->
+  <script>
+    // ── Free story counter (localStorage) ────────────────
+    const FREE_LIMIT   = 3;
+    const STORAGE_KEY  = 'tbs_stories_used';
+
+    function getUsed()      { return parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10); }
+    function incrementUsed(){ localStorage.setItem(STORAGE_KEY, getUsed() + 1); }
+
+    function updateBadge() {
+      const used = getUsed();
+      const remaining = Math.max(0, FREE_LIMIT - used);
+      const badge = document.getElementById('free-badge');
+      const countEl = document.getElementById('free-count');
+      const upgradeBanner = document.getElementById('upgrade-banner');
+
+      if (remaining <= 0) {
+        badge.style.background = 'var(--orange)';
+        countEl.textContent = '0';
+        upgradeBanner.classList.add('visible');
+      } else {
+        countEl.textContent = remaining;
+        upgradeBanner.classList.remove('visible');
+      }
+    }
+    updateBadge();
+
+    // ── Name → hint sync ─────────────────────────────────
+    const nameInput    = document.getElementById('childName');
+    const nameHint     = document.getElementById('extras-name-hint');
+    nameInput.addEventListener('input', () => {
+      nameHint.textContent = nameInput.value.trim() || 'this child';
+    });
+
+    // ── Extras toggle ─────────────────────────────────────
+    const extrasToggle = document.getElementById('extras-toggle');
+    const extrasPanel  = document.getElementById('extras-panel');
+    extrasToggle.addEventListener('click', () => {
+      const open = extrasPanel.classList.toggle('open');
+      extrasToggle.classList.toggle('open', open);
+      extrasToggle.setAttribute('aria-expanded', open);
+    });
+
+    // ── Form validation ───────────────────────────────────
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.classList.add('visible');
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function clearError() {
+      document.getElementById('error-msg').classList.remove('visible');
+    }
+
+    // ── Story streaming ───────────────────────────────────
+    document.getElementById('story-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const childName = document.getElementById('childName').value.trim();
+      const ageEl     = document.querySelector('input[name="age"]:checked');
+      const hobbyEl   = document.querySelector('input[name="hobby"]:checked');
+      const lessonEl  = document.querySelector('input[name="lesson"]:checked');
+      const pronoun   = (document.querySelector('input[name="pronoun"]:checked') || {}).value || 'they';
+      const extraInfo = document.getElementById('extraInfo').value.trim();
+
+      if (!childName)   return showError('Please enter the child\'s name.');
+      if (!ageEl)       return showError('Please select an age group.');
+      if (!hobbyEl)     return showError('Please choose a story setting.');
+      if (!lessonEl)    return showError('Please choose something for the story to explore.');
+
+      // Free limit check
+      if (getUsed() >= FREE_LIMIT) {
+        document.getElementById('upgrade-banner').classList.add('visible');
+        document.getElementById('upgrade-banner').scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
+      // UI: loading state
+      const btn     = document.getElementById('generate-btn');
+      const btnText = document.getElementById('btn-text');
+      btn.disabled  = true;
+      btn.classList.add('loading');
+      btnText.textContent = 'Cooking up the magic…';
+
+      // Hide old story, reset state
+      const storySection = document.getElementById('story-section');
+      const storyTitle   = document.getElementById('story-title');
+      const storyBody    = document.getElementById('story-body');
+      const sciSpark     = document.getElementById('science-spark');
+      const sciSparkText = document.getElementById('science-spark-text');
+
+      storySection.style.display = 'none';
+      storyTitle.textContent     = '';
+      storyBody.innerHTML        = '';
+      sciSpark.classList.remove('visible');
+      sciSparkText.textContent   = '';
+
+      try {
+        const response = await fetch('/api/generate-story', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            childName,
+            age:      ageEl.value,
+            pronoun,
+            hobby:    hobbyEl.value,
+            lesson:   lessonEl.value,
+            extraInfo,
+          }),
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.error || 'Server error. Please try again.');
+        }
+
+        storySection.style.display = 'block';
+        storySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        const reader  = response.body.getReader();
+        const decoder = new TextDecoder();
+        let   buffer  = '';
+        let   rawText = '';   // full accumulated story text
+
+        // Add blinking cursor
+        const cursor = document.createElement('span');
+        cursor.className = 'cursor';
+        storyBody.appendChild(cursor);
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (!line.startsWith('data:')) continue;
+            const data = line.slice(5).trim();
+            if (data === '[DONE]') break;
+
+            let parsed;
+            try { parsed = JSON.parse(data); } catch { continue; }
+
+            if (parsed.error) { showError(parsed.error); break; }
+            if (!parsed.text)  continue;
+
+            rawText += parsed.text;
+            renderStory(rawText, storyTitle, storyBody, sciSpark, sciSparkText, cursor);
+          }
+        }
+
+        // Remove cursor on completion
+        cursor.remove();
+        renderStory(rawText, storyTitle, storyBody, sciSpark, sciSparkText, null);
+
+        incrementUsed();
+        updateBadge();
+
+      } catch (err) {
+        console.error(err);
+        showError(err.message || 'Something went wrong. Please try again!');
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btnText.textContent = 'Create Magical Story!';
+      }
+    });
+
+    // ── Render story text progressively ──────────────────
+    function renderStory(rawText, titleEl, bodyEl, sparkEl, sparkTextEl, cursor) {
+      const SPARK_MARKER = '⚡ THE BEARDED SCIENTIST\'S SCIENCE SPARK ⚡';
+
+      let titlePart = '';
+      let bodyPart  = rawText;
+      let sparkPart = '';
+
+      // Separate title (first non-empty line)
+      const lines     = rawText.split('\n');
+      const firstLine = lines.find(l => l.trim());
+      if (firstLine) {
+        titlePart = firstLine.trim();
+        bodyPart  = lines.slice(lines.indexOf(firstLine) + 1).join('\n').trimStart();
+      }
+
+      // Separate science spark
+      const sparkIdx = bodyPart.indexOf(SPARK_MARKER);
+      if (sparkIdx !== -1) {
+        sparkPart = bodyPart.slice(sparkIdx + SPARK_MARKER.length).trim();
+        bodyPart  = bodyPart.slice(0, sparkIdx).trim();
+      }
+
+      // Set title
+      titleEl.textContent = titlePart;
+
+      // Set body (replace \n\n with paragraphs)
+      const bodyHtml = bodyPart
+        .split(/\n{2,}/)
+        .filter(p => p.trim())
+        .map(p => `<p>${escHtml(p.trim())}</p>`)
+        .join('');
+      bodyEl.innerHTML = bodyHtml;
+      if (cursor) bodyEl.appendChild(cursor);
+
+      // Science spark
+      if (sparkPart) {
+        sparkEl.classList.add('visible');
+        sparkTextEl.textContent = sparkPart;
+      }
+    }
+
+    function escHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ── Download (print to PDF) ───────────────────────────
+    function downloadStory() {
+      window.print();
+    }
+
+    // ── Reset form ────────────────────────────────────────
+    function resetForm() {
+      document.getElementById('story-section').style.display = 'none';
+      document.getElementById('story-form').reset();
+      document.getElementById('free-badge').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Re-check the default they/them pronoun
+      document.getElementById('pronThey').checked = true;
+    }
+  </script>
+</body>
+</html>
